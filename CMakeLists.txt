@@ -1,7 +1,6 @@
-cmake_minimum_required(VERSION 3.12)
+cmake_minimum_required(VERSION 3.16)
 
 set(ASSIMP_BUILD_DRACO OFF CACHE BOOL "..." FORCE )
-
 
 
 project(OpenglEngine
@@ -55,7 +54,7 @@ add_library(imgui
     external/imgui/imgui_demo.cpp
     external/imgui/backends/imgui_impl_opengl3.cpp
     external/imgui/backends/imgui_impl_glfw.cpp
-    )
+)
     
 
 target_include_directories(imgui PUBLIC external/imgui external/imgui/backends external/glad/include)

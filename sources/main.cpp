@@ -42,8 +42,6 @@ unsigned int sizeY = 1000;
 Camera camera = Camera(sizeX,sizeY);
 GLFWwindow* window = setupDisplay();
 
-
-
 int main()
 {
 	MasterRenderer renderer = MasterRenderer(sizeX,sizeY);
@@ -60,10 +58,9 @@ int main()
 	Animation animation("Data/model.dae",&sac);
 	Animator animator(&animation);
 
-	//renderer.addObject(&sac);
+	renderer.addObject(&sac);
 
 	Object object = Object(&camera,&light,"Data/cube.obj",&renderer);
-
 	object.setPosition(glm::vec3(0,5,0));
 
 	renderer.addObject(&object);
@@ -87,7 +84,6 @@ int main()
 
 		animator.UpdateAnimation(deltaTime);
 		auto transforms = animator.GetFinalBoneMatrices();
-
 		sac.transformations = transforms;
 		
 		renderer.render();

@@ -14,6 +14,7 @@ This is a project I wrote during my high school. It's very old and the code not 
 - skybox
 - post processing
 - imgui
+- shadows
 
 ### How to install it
 

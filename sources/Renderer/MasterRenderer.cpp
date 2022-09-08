@@ -3,7 +3,7 @@
 
 MasterRenderer::MasterRenderer(unsigned int sizeX_in,unsigned int sizeY_in)
 {
-	objects = vector<Object*>();
+	objects = vector<Drawable*>();
 	animatedsobjects = vector<AnimatedObject*>();
 	screenShader = Shader("../sources/Renderer/renderer_v.glsl", "../sources/Renderer/renderer_f.glsl");
 	
@@ -28,9 +28,6 @@ void MasterRenderer::render()
 	for(auto o:animatedsobjects) 
 	{
 		o->drawShadow();
-	}
-	if(terrain != NULL) {
-		terrain->drawShadow();
 	}
 
 	glViewport(0, 0,sizeX,sizeY);
@@ -78,18 +75,16 @@ void MasterRenderer::addSkybox(Skybox *skybox_in)
 
 void MasterRenderer::addTerrain(TerrainGenerator *terrain_in)
 {
-	terrain = terrain_in;
+	objects.push_back(terrain_in);
 }
+
+
 
 void MasterRenderer::draw()
 {
 	if (skybox != NULL) {
 		skybox->draw();
 	}
-	if (terrain != NULL) {
-		terrain->draw();
-	}
-
 	for (auto object : objects)
 	{
 		object->draw();
@@ -106,10 +101,6 @@ void MasterRenderer::drawLowQuality()
 	if (skybox != NULL) {
 		skybox->draw();
 	}
-	if (terrain != NULL) {
-		terrain->drawLowQuality();
-	}
-
 	for (auto object : objects)
 	{
 		object->drawLowQuality();

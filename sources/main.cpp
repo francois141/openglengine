@@ -54,13 +54,13 @@ int main()
 	renderer.addSkybox(&skybox);
 	renderer.addTerrain(&terrain);
 
-	AnimatedObject sac = AnimatedObject(&camera,&light,"Data/model.dae","salut",&renderer);
+	AnimatedObject sac = AnimatedObject(&camera,&light,"Data/model.dae","Data/diffuse.png",&renderer);
 	Animation animation("Data/model.dae",&sac);
 	Animator animator(&animation);
 
 	renderer.addObject(&sac);
 
-	Object object = Object(&camera,&light,"Data/cube.obj",&renderer);
+	Object object = Object(&camera,&light,"Data/backpack.obj",&renderer);
 	object.setPosition(glm::vec3(0,5,0));
 
 	renderer.addObject(&object);

@@ -2,6 +2,7 @@
 #define MASTER_RENDERER_H
 
 #include "Object/Object.h"
+#include "Drawable/Drawable.h"
 #include "Core/Camera.h"
 #include "Core/Light.h"
 #include "Loader/Shader.h"
@@ -76,9 +77,8 @@ class MasterRenderer
 		};
 
 		// Some attributes to store the objects in the renderer
-		Skybox *skybox = NULL;
-		TerrainGenerator *terrain = NULL;
-		vector<Object*> objects;
+		Skybox* skybox;
+		vector<Drawable*> objects;
 		vector<AnimatedObject*> animatedsobjects;
 
 		unsigned int sizeX;

@@ -4,6 +4,17 @@ This is a project I wrote during my high school. It's very old and the code not 
 
 ![alt text](./engine.png)
 
+## Features
+
+- camera
+- light
+- objects
+- obj loading
+- terrain
+- skybox
+- post processing
+- imgui
+
 ### How to install it
 
 ```bash

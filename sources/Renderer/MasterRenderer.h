@@ -34,8 +34,7 @@ class MasterRenderer
 		// Render function for the mainloop
 		void render();
 		// Add objects to render
-		void addObject(Object *object);
-		void addObject(AnimatedObject *object);
+		void addDrawable(Drawable *object);
 		void addSkybox(Skybox *skybox_in);
 		void addTerrain(TerrainGenerator *terrain_in);
 
@@ -79,7 +78,6 @@ class MasterRenderer
 		// Some attributes to store the objects in the renderer
 		Skybox* skybox;
 		vector<Drawable*> objects;
-		vector<AnimatedObject*> animatedsobjects;
 
 		unsigned int sizeX;
 		unsigned int sizeY;

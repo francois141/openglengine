@@ -58,12 +58,12 @@ int main()
 	Animation animation("Data/model.dae",&sac);
 	Animator animator(&animation);
 
-	renderer.addObject(&sac);
+	renderer.addDrawable(&sac);
 
 	Object object = Object(&camera,&light,"Data/backpack.obj",&renderer);
 	object.setPosition(glm::vec3(0,5,0));
 
-	renderer.addObject(&object);
+	renderer.addDrawable(&object);
 
 
 	bool blackScreen = false;

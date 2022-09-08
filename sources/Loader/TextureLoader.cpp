@@ -34,7 +34,7 @@ int TextureLoader::loadTexture()
 
 	else
 	{
-		std::cout << "Failed to load texture" << std::endl;
+		std::cout << "Failed to load texture : " << path << std::endl;
 	}
 
 	stbi_image_free(data);

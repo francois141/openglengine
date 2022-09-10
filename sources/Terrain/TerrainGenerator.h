@@ -48,6 +48,8 @@ class TerrainGenerator : public Drawable{
 		void bind();
 		void passToShader(RenderType);
 		void unbind();
+
+        void _draw(const RenderType RENDER_TYPE);
  
 		// Specific functions to build the terrain
 		vector<float> generateTerrain();
@@ -70,10 +72,13 @@ class TerrainGenerator : public Drawable{
 		glm::vec3 point4 = glm::vec3(1, 0, 1);
 		glm::vec3 normal = glm::vec3(0, 1.0, 0);
 		unsigned int SIZE = 255;
-		int cellSize = 1;
+
 		vector<float> data;
 		vector<float> vertexData;
 		vector<vector<double> > heightData;
+
+        const string BASE_PATH_RESOURCES = "../sources/Terrain/Resources/";
+        const string BASE_PATH_SHADERS = "../sources/Terrain/Shaders/";
 };
 
 #endif

@@ -51,6 +51,7 @@ class Object : public Drawable {
 		void unbind();
 
 		void bind(int index);
+        void _draw(RenderType TYPE);
 
 		// Indices
 		std::vector<unsigned int> VAOS;

@@ -1,6 +1,6 @@
 # My own opengl engine
 
-This is a project I wrote during my high school. It's very old and the code not optimal. I plan to improve it in the future.
+This is a project I wrote during my high school. It's very old and the code not optimal. I am refactoring and improving it right now.
 
 ![alt text](./engine.png)
 

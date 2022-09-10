@@ -112,46 +112,28 @@ public:
 			// open files
 			vShaderFile.open(vertexPath);
 			fShaderFile.open(fragmentPath);
-			includeShaderFileVertex.open("../sources/ShaderClassic/IncludeVertex.glsl");
-			includeShaderFileFragment.open("../sources/ShaderClassic/IncludeFragment.glsl");
-			functionShaderFileVertex.open("../sources/ShaderClassic/ClassicFunctionsVertex.glsl");
-			functionShaderFileFragment.open("../sources/ShaderClassic/ClassicFunctionsFragment.glsl");
-			std::stringstream vShaderStream, fShaderStream,includeShaderStreamFragment;
-			std::stringstream includeShaderStreamVertex,functionShaderStreamVertex,functionShaderStreamFragment;
+
+            // Create string strea,s
+			std::stringstream vShaderStream, fShaderStream;
 
 			// read file's buffer contents into streams
 			vShaderStream << vShaderFile.rdbuf();
 			fShaderStream << fShaderFile.rdbuf();
-			includeShaderStreamVertex << includeShaderFileVertex.rdbuf();
-			includeShaderStreamFragment << includeShaderFileFragment.rdbuf();
-			functionShaderStreamVertex << functionShaderFileVertex.rdbuf();
-			functionShaderStreamFragment << functionShaderFileFragment.rdbuf();
 
 			// close file handlers
 			vShaderFile.close();
 			fShaderFile.close();
-			includeShaderFileVertex.close();
-			includeShaderFileFragment.close();
-			functionShaderFileVertex.close();
-			functionShaderFileFragment.close();
+
 
 			// convert stream into string
 			vertexCode = vShaderStream.str();
 			fragmentCode = fShaderStream.str();
-			includeCodeVertex = includeShaderStreamVertex.str();
-			includeCodeFragment = includeShaderStreamFragment.str();
-			functionCodeVertex = functionShaderStreamVertex.str();
-			functionCodeFragment = functionShaderStreamFragment.str();
+
 		}
 		catch (std::ifstream::failure& e)
 		{
 			std::cout << "ERROR::SHADER::FILE_NOT_SUCCESFULLY_READ" << std::endl;
 		}
-
-		// Add include code to the vertex shader
-		vertexCode = includeCodeVertex + "\n" + vertexCode + "\n" + functionCodeVertex;
-		// Add include code to the fragment shader 
-		fragmentCode = includeCodeFragment + "\n" + fragmentCode + "\n" + functionCodeFragment;
 
 		const char* vShaderCode = vertexCode.c_str();
 		const char* fShaderCode = fragmentCode.c_str();

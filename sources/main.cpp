@@ -6,7 +6,7 @@
 #include <glm/gtc/type_ptr.hpp>
 #include <glm/gtx/string_cast.hpp>
 
-#include "Loader/Shader.h"
+#include "Shaders/Shader.h"
 #include "Loader/stb_image.h"
 #include "Core/Camera.h"
 #include "Object/Object.h"
@@ -54,11 +54,11 @@ int main()
 	renderer.addSkybox(&skybox);
 	renderer.addTerrain(&terrain);
 
-	AnimatedObject sac = AnimatedObject(&camera,&light,"Data/model.dae","Data/diffuse.png",&renderer);
+	/*AnimatedObject sac = AnimatedObject(&camera,&light,"Data/model.dae","Data/diffuse.png",&renderer);
 	Animation animation("Data/model.dae",&sac);
 	Animator animator(&animation);
 
-	renderer.addDrawable(&sac);
+	renderer.addDrawable(&sac);*/
 
 	Object object = Object(&camera,&light,"Data/backpack.obj",&renderer);
 	object.setPosition(glm::vec3(0,5,0));
@@ -71,9 +71,9 @@ int main()
 	float lastFrame;
 	UI ui = UI(window);
 
-	animator.UpdateAnimation(0);
-	auto transforms = animator.GetFinalBoneMatrices();
-	sac.transformations = transforms;
+	//animator.UpdateAnimation(0);
+	//auto transforms = animator.GetFinalBoneMatrices();
+	//sac.transformations = transforms;
 
 	while (!glfwWindowShouldClose(window)) 
 	{
@@ -82,9 +82,9 @@ int main()
         float deltaTime = currentFrame - lastFrame;
         lastFrame = currentFrame;
 
-		animator.UpdateAnimation(deltaTime);
+		/*animator.UpdateAnimation(deltaTime);
 		auto transforms = animator.GetFinalBoneMatrices();
-		sac.transformations = transforms;
+		sac.transformations = transforms;*/
 		
 		renderer.render();
 		ui.render();

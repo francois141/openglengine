@@ -2,7 +2,7 @@
 #define OBJECT_H
 
 #include "Drawable/Drawable.h"
-#include "Loader/Shader.h"
+#include "Shaders/Shader.h"
 #include "Core/Camera.h"
 #include "Core/Light.h"
 #include "Loader/stb_image.h"
@@ -66,6 +66,8 @@ class Object : public Drawable {
 		unsigned int nbMeshes;
 		unsigned int normalMap;
 		unsigned int specularTexture;
+
+        const string SHADER_FOLDER = "../sources/Object/Shaders/";
 };
 
 #endif

@@ -8,7 +8,7 @@
 #include <glm/gtc/type_ptr.hpp>
 #include <vector>
 
-#include "Loader/Shader.h"
+#include "Shaders/Shader.h"
 #include "Core/Light.h"
 #include "Core/Camera.h"
 

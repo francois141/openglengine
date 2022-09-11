@@ -62,6 +62,8 @@ in mat3 TBN;
 layout (location = 0) out vec4 FragColor;
 layout (location = 1) out vec4 BrightColor;
 
+ADD_MODULE(../sources/Object/Shaders/test.glsl)
+
 void main()
 {
     if (RenderType == NORMAL) {

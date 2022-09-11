@@ -5,7 +5,7 @@
 #include "Drawable/Drawable.h"
 #include "Core/Camera.h"
 #include "Core/Light.h"
-#include "Loader/Shader.h"
+#include "Shaders/Shader.h"
 #include "Skybox/Skybox.h"
 #include "Terrain/TerrainGenerator.h"
 #include "Drawable/Drawable.h"

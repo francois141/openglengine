@@ -24,8 +24,7 @@ find_package(OpenGL REQUIRED)
 add_executable(
     ${PROJECT_NAME}
     ${MY_HEADER_FILES}
-    ${MY_SOURCES_FILES}
-)
+    ${MY_SOURCES_FILES})
 
 
 add_subdirectory(external/glfw)

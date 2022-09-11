@@ -9,7 +9,7 @@
 
 #include "Loader/stb_image.h"
 #include "Core/Camera.h"
-#include "Loader/Shader.h"
+#include "Shaders/Shader.h"
 
 
 class Skybox {

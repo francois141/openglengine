@@ -2,3 +2,4 @@ external
 build
 sources/Data
 cmake-build-debug
+.idea

@@ -1,7 +1,11 @@
 #include "Object.h"
 
 Object::Object(Camera *camera_in, Light *light_in, string obj_path, MasterRenderer *renderer_in) {
-    shader = new Shader("../sources/Object/Shaders/object_v.glsl", "../sources/Object/Shaders/object_f.glsl", true);
+
+    const string vertexShaderPath = SHADER_FOLDER + "object_v.glsl";
+    const string fragmentShaderPath = SHADER_FOLDER + "object_f.glsl";
+
+    shader = new Shader(vertexShaderPath, fragmentShaderPath);
 
     renderer = renderer_in;
     camera = camera_in;

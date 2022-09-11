@@ -2,7 +2,7 @@
 #define ANIMATEDOBJECT_H
 
 #include "Drawable/Drawable.h"
-#include "Loader/Shader.h"
+#include "Shaders/Shader.h"
 #include "Core/Camera.h"
 #include "Core/Light.h"
 #include "Loader/stb_image.h"

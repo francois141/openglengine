@@ -140,6 +140,8 @@ private:
         float midWayLength = animationTime - lastTimeStamp;
         float framesDiff = nextTimeStamp - lastTimeStamp;
         scaleFactor = midWayLength / framesDiff;
+
+        return scaleFactor;
     }
 
     glm::mat4 InterpolatePosition(float animationTime)

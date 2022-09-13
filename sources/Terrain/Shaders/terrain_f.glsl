@@ -53,6 +53,9 @@ uniform PointLight pointLights[MAX_POINT_LIGHTS];
 
 uniform int RenderType;
 
+ADD_MODULE(../sources/Shaders/modules/shadow.glsl)
+
+
 /** MAIN FUNCTION**/
 
 void main()
@@ -87,27 +90,6 @@ vec3 blendMaps()
 	color_out += value4*texture(texture4,textureCoordsTiles).xyz;
 
 	return color_out;
-}
-
-float ShadowCalculation(vec4 fragPosLightSpace)
-{
-    vec3 projCoords = fragPosLightSpace.xyz / fragPosLightSpace.w;
-    projCoords = projCoords * 0.5 + 0.5;
-
-	if(projCoords.x < 0 || projCoords.x > 1){
-		return 0.0f;
-	} else if (projCoords.y < 0 || projCoords.y > 1) {
-		return 0.0f;
-	} else if (projCoords.z < 0 || projCoords.z > 1) {
-		return 0.0f;
-	}
-
-    float closestDepth = texture(ShadowMap, projCoords.xy).r; 
-    float currentDepth = projCoords.z;
-
-	float shadow = currentDepth - 0.003 >= closestDepth ? 1.0 : 0.0; 
-
-    return shadow;
 }
 
 float computeDiffuseLight()

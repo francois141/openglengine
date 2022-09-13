@@ -56,7 +56,8 @@ private:
     string addIncludes(string code);
     string readFile(string path);
 
-    string MODULE_REGEX_MATCHER = "ADD_MODULE\\(.*\\)";
+    std::string MODULE_REGEX_MATCHER = "ADD_MODULE\\(.*\\)";
+    static const unsigned int MAX_INCLUDE_FILES_DEPTH = 5;
 
     // Utility function
     void checkCompileErrors(unsigned int shader, std::string type);

@@ -175,26 +175,42 @@ string Shader::addIncludes(std::string code) {
 
         return regex(include_string);
     };
+    
+    // Iterate until we are done. So we can include submodules.
+    // If the number of includes is bigger than MAX_INCLUDE_FILES, then we can assume we have a cycle and we should break it
 
-    const regex matcher = regex(MODULE_REGEX_MATCHER);
-    smatch m;
-    map<string,string> fragments;
+    unsigned int count = 0;
+    unsigned int prevCount = -1;
 
-    if (regex_search(code, m, matcher)) {
+    while(count <= MAX_INCLUDE_FILES_DEPTH && count != prevCount) {
 
-        for (string matched_include: m) {
-            const string path = extract_path(matched_include);
-            const string content = readFile(path);
-            fragments.insert({matched_include,content});
-        }
-    }
+        const regex matcher = regex(MODULE_REGEX_MATCHER);
+        smatch m;
+        map<string,string> fragments;
 
-    for (const pair<string,string> &pair : fragments ) {
-            regex expr = format_regex(pair.first);
+        prevCount = count;
+
+        string::const_iterator searchStart(code.cbegin());
+        while (regex_search(searchStart,code.cend(),m,matcher)) {
+            
+            for (string matched_include: m) {
+                const string path = extract_path(matched_include);
+                const string content = readFile(path);
+                fragments.insert({matched_include,content});
+            }
+
+            searchStart = m.suffix().first;
+        } 
+
+        for (const pair<string,string> &pair : fragments ) {
+            const regex expr = format_regex(pair.first);
             code = regex_replace(code,expr,pair.second);
+        }
+
+        count += 1 - fragments.empty();
     }
 
-    return code;
+    return count > MAX_INCLUDE_FILES_DEPTH ? "" : code;
 }
 
 string Shader::readFile(std::string path) {
@@ -217,6 +233,7 @@ string Shader::readFile(std::string path) {
     catch (std::ifstream::failure &e) {
         // TODO: Add logger here
         std::cout << "ERROR::SHADER::MODULE_NOT_SUCCESFULLY_READ" << std::endl;
+        exit(1);
     }
 
     return code;

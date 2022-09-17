@@ -33,7 +33,7 @@ class TerrainGenerator : public Drawable{
 
 	public:
 		// Constructor
-		TerrainGenerator(Camera* camera_in, Light* light_in,MasterRenderer *renderer_in);
+		TerrainGenerator(Camera* camera_in, Light* light_in,MasterRenderer *renderer_in,const unsigned int size);
 
 		// Classical draw functions
 		void draw();
@@ -52,26 +52,20 @@ class TerrainGenerator : public Drawable{
         void _draw(const RenderType RENDER_TYPE);
  
 		// Specific functions to build the terrain
-		vector<float> generateTerrain();
-		void generateCell(int offsetX, int offsetZ,int x, int z);
+		vector<float> generateTerrain(const unsigned int size);
+		void generateCell(int offsetX, int offsetZ,int x, int z,const unsigned int size);
 		void addVecOffset(glm::vec3 data, int offsetX, int offsetZ,int x, int z);
 		void addVec(glm::vec2 data);
 		void addVec(glm::vec3 data);
+		void addEmptyVec3();
 
 		// Multitexturing
+		vector<unsigned int> textures;
 		unsigned int texture1;
 		unsigned int texture2;
 		unsigned int texture3;
 		unsigned int texture4;
 		unsigned int blendMap;
-
-		// Some variables to build the terrain
-		glm::vec3 point1 = glm::vec3(0, 0, 0);
-		glm::vec3 point2 = glm::vec3(0, 0, 1);
-		glm::vec3 point3 = glm::vec3(1, 0, 0);
-		glm::vec3 point4 = glm::vec3(1, 0, 1);
-		glm::vec3 normal = glm::vec3(0, 1.0, 0);
-		unsigned int SIZE = 255;
 
 		vector<float> data;
 		vector<float> vertexData;

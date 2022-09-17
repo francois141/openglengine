@@ -4,22 +4,9 @@
 #define NORMAL 2
 #define SHADOW 3
 
-uniform bool hasAlbedoMap;
-uniform bool hasSpecularMap;
-uniform bool hasNormalMap;
-
-uniform vec3 albedoColor;
-uniform float specularValue;
-
-uniform vec3 cameraPosition;
-uniform sampler2D albedoMap;
-uniform sampler2D ShadowMap;
-uniform sampler2D specularMap;
-uniform sampler2D normalMap;
-
 layout(location = 0) in vec3 aPos;
-layout(location = 2) in vec2 textureCoord;
 layout(location = 1) in vec3 aNormal;
+layout(location = 2) in vec2 textureCoord;
 layout(location = 3) in vec3 tangent;
 layout(location = 4) in vec3 bitangent;
 
@@ -35,11 +22,26 @@ uniform mat4 projection;
 uniform mat4 view;
 uniform mat4 model;
 uniform mat4 lightSpaceMatrix;
+
 uniform int RenderType;
+
+uniform bool hasAlbedoMap;
+uniform bool hasSpecularMap;
+uniform bool hasNormalMap;
+
+uniform vec3 albedoColor;
+uniform float specularValue;
+
+uniform vec3 cameraPosition;
+uniform sampler2D albedoMap;
+uniform sampler2D ShadowMap;
+uniform sampler2D specularMap;
+uniform sampler2D normalMap;
+
+ADD_MODULE(../sources/Shaders/modules/position.glsl)
 
 void main()
 {
-
 	if(RenderType == LOW || RenderType == NORMAL) {
 		Tangent = tangent;
 		Bitangent = bitangent;
@@ -52,13 +54,9 @@ void main()
 		textureCoords = textureCoord;
 		FragPos = vec3(model * vec4(aPos, 1.0));
 		Normal = mat3(transpose(inverse(model))) * aNormal;  
-		gl_Position = projection * view * model * vec4(aPos.x, aPos.y, aPos.z, 1.0);
 		FragPosLightSpace = lightSpaceMatrix * model * vec4(aPos,1.0);
-		return;
-	}
-	else {
-		gl_Position = lightSpaceMatrix * model * vec4(aPos,1.0);
 	}
 
+	gl_Position = computePosition(lightSpaceMatrix,projection,view,model,aPos,RenderType);
 }
 

@@ -20,6 +20,22 @@ class TextureLoader {
 public:
 
     static int loadTexture(std::string path) {
+        return TextureLoader::_loadTextures(path);
+    }   
+
+    static std::vector<unsigned int> loadTextures(std::string base_path, std::vector<std::string> paths) {
+        
+        std::vector<unsigned int> textures = std::vector<unsigned int>(0);
+
+        for (auto it = begin(paths); it != end (paths); ++it) {
+            std::string final_path = base_path +*it;
+            textures.push_back(TextureLoader::_loadTextures(final_path));
+        }
+
+        return textures;
+    }
+
+    static int _loadTextures(std::string path) {
 
         unsigned int texture;
 
@@ -30,6 +46,7 @@ public:
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+
         // load and generate the texture
         int width, height, nrChannels;
 
@@ -51,6 +68,7 @@ public:
 
         return texture;
     }
+
 
 };
 

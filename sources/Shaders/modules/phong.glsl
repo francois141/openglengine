@@ -1,24 +1,21 @@
 
-/** Return the ambient Light **/
-vec3 computeAmbientLight()
-{
-    float ambientLight = 0.05;
-    return ambientLight*retrieveProperty(albedoTextureID, textureCoords);
+/** Function that sum all components together **/
+vec4 getPhongColor() {
+    vec3 phongColor = vec3(0,0,0);
+
+    float shadowReductionFactor = 1-ShadowCalculation(FragPosLightSpace);
+    vec3 normal = getNormalVector();
+
+    phongColor += computeAmbientIntensity() * getAmbientColor();
+    phongColor += computeDiffuseIntensity(normal) * getDiffuseColor() * shadowReductionFactor;
+    phongColor += computeSpecularIntensity(normal) * getSpecularColor() * shadowReductionFactor;
+
+    return vec4(phongColor,1.0); 
 }
 
-/** Return the diffuse Liht **/
-vec3 computeDiffuseLight(vec3 normal)
-{
-    float diffuseLight = 0.2*max(dot(normalize(normal), normalize(light.lightDirection)), 0.0);
-
-    float specularStrength = 0.5;
-
-    vec3 viewDir = normalize(cameraPosition - FragPos);
-    vec3 reflectDir = normalize(reflect(-light.lightDirection, normal));
-
-    float spec =  pow(max(dot(viewDir, reflectDir), 0.0), 28);
-
-    return diffuseLight * retrieveProperty(albedoTextureID, textureCoords) + spec * retrieveProperty(specularTextureID, textureCoords);
+/** Get the bright color **/ 
+vec4 getBrightColor(vec4 baseColor) {
+    return dot(baseColor.xyz, vec3(0.2126, 0.7152, 0.0722)) > 0.7 ? baseColor : vec4(0,0,0,1);
 }
 
 /** Compute the values of the points lights **/
@@ -47,34 +44,54 @@ vec3 computePointLight()
         outColor += attenuation*(directional+1.5*spec)*lightColor;
     }
 
-    return outColor * retrieveProperty(albedoTextureID, textureCoords);//texture(albedoMap,textureCoords).xyz;
+    return outColor * _retrieveProperty(albedoTextureID, textureCoords);
 }
 
-/** Retrieve the color of a given property **/
-vec3 retrieveProperty(int textureType, vec2 coords)
+/** Return the ambient Light **/
+float computeAmbientIntensity()
 {
-    vec3 color = vec3(0, 0, 0);
-    if (textureType == albedoTextureID) {
-        if (hasAlbedoMap)
-        {
-            color = texture(albedoMap, coords).xyz;
-        }
-        else
-        {
-            color = ambientColor;// Change for ALBEDO COLOR SOON
-        }
-    }
-    else if (textureType == specularTextureID) {
-        if (hasSpecularMap)
-        {
-            color = texture(specularMap, coords).xyz;
-        }
-        else
-        {
-            color = vec3(specularExponent, specularExponent, specularExponent);
-        }
-    }
-
-    return color;
+    float ambientLight = 0.05;
+    return ambientLight;
 }
 
+/** Return the diffuse Liht **/
+float computeDiffuseIntensity(vec3 normal)
+{
+    float diffuseLight = 0.2*max(dot(normalize(normal), normalize(light.lightDirection)), 0.0);
+
+
+    vec3 viewDir = normalize(cameraPosition - FragPos);
+    vec3 reflectDir = normalize(reflect(-light.lightDirection, normal));
+
+
+    return diffuseLight;
+}
+
+/** Return the specular intensity **/
+float computeSpecularIntensity(vec3 normal)
+{
+    float specularStrength = 0.5;
+
+    vec3 viewDir = normalize(cameraPosition - FragPos);
+    vec3 reflectDir = normalize(reflect(-light.lightDirection, normal));
+
+    float spec = pow(max(dot(viewDir, reflectDir), 0.0), 28);
+    return spec;
+}
+
+/** Return the normal vector **/
+vec3 getNormalVector() {
+    vec3 normal;
+    if (hasNormalMap) {
+        normal = texture(normalMap, textureCoords).xyz;
+        normal = normal * 2.0 - 1.0;
+        normal = normalize(TBN * normal);
+    }
+    else
+    {
+        normal = Normal;
+    }
+
+    return normal;
+}
+ 

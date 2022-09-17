@@ -13,6 +13,7 @@ vec3  blendMaps();
 float computeDiffuseLight();
 float computeAmbientLight();
 vec3  computePointLight();
+vec3 getLightIntensity();
 
 float ShadowCalculation(vec4 fragPosLightSpace);
 
@@ -62,14 +63,18 @@ void main()
 {	
 	if(RenderType == NORMAL || RenderType == LOW) 
 	{
-		float shadow = ShadowCalculation(FragPosLightSpace);
-		FragColor = vec4(computeDiffuseLight() * (1 - shadow)* blendMaps() + computeAmbientLight() * blendMaps() + computePointLight() * blendMaps(),1.0);
+		vec3 color = blendMaps();
+		vec3 lightIntensity = getLightIntensity();
+
+		FragColor = vec4(color * lightIntensity,1.0);
 		BrightColor = vec4(0,0,0,1); // No bloom on the terrain
 	}
 	else if(RenderType == SHADOW) {
-
+		// Do nothing on the fragment side
 	}
 }
+
+
 
 /** OTHER FUNCTIONS **/
 
@@ -92,6 +97,11 @@ vec3 blendMaps()
 	return color_out;
 }
 
+vec3 getLightIntensity() {
+	float shadow = ShadowCalculation(FragPosLightSpace);
+	return computeDiffuseLight() * (1 - shadow) + computeAmbientLight() + computePointLight();
+}
+
 float computeDiffuseLight()
 {
 	float diffuseLight = 0.1*max(dot(normalize(Normal),normalize(light.lightDirection)),0.0);
@@ -100,7 +110,7 @@ float computeDiffuseLight()
 
 float computeAmbientLight()
 {
-	float ambientLight = 0.1;
+	float ambientLight = 0.01;
 	return ambientLight;
 }
 

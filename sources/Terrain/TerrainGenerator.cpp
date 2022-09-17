@@ -1,6 +1,6 @@
 #include "TerrainGenerator.h"
 
-TerrainGenerator::TerrainGenerator(Camera *camera_in, Light *light_in, MasterRenderer *renderer_in) {
+TerrainGenerator::TerrainGenerator(Camera *camera_in, Light *light_in, MasterRenderer *renderer_in,const unsigned int size) {
     const string vertex_shader_path = BASE_PATH_SHADERS + "terrain_v.glsl";
     const string fragment_shader_path = BASE_PATH_SHADERS + "terrain_f.glsl";
 
@@ -20,13 +20,11 @@ TerrainGenerator::TerrainGenerator(Camera *camera_in, Light *light_in, MasterRen
         }
     }
     // generate terrain
-    data = generateTerrain();
+    data = generateTerrain(size);
 
-    texture1 = TextureLoader::loadTexture(BASE_PATH_RESOURCES + "texture1.png");
-    texture2 = TextureLoader::loadTexture(BASE_PATH_RESOURCES + "texture2.png");
-    texture3 = TextureLoader::loadTexture(BASE_PATH_RESOURCES + "texture5.png");
-    texture4 = TextureLoader::loadTexture(BASE_PATH_RESOURCES + "texture2.png");
-
+    vector<std::string> textures_path = {"texture1.png","texture2.png","texture5.png","texture2.png"};
+    textures = TextureLoader::loadTextures(BASE_PATH_RESOURCES,textures_path);
+    
     blendMap = TextureLoader::loadTexture(BASE_PATH_RESOURCES + "blendmap.png");
 
     createBuffers();
@@ -80,22 +78,26 @@ void TerrainGenerator::bind() {
     glBindVertexArray(VAO);
     glBindBuffer(GL_ARRAY_BUFFER, VBO);
     // Bind VBO
-    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void *) 0);
+    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 14 * sizeof(float), (void *) 0);
     glEnableVertexAttribArray(0);
-    glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void *) (3 * sizeof(float)));
+    glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 14 * sizeof(float), (void *) (3 * sizeof(float)));
     glEnableVertexAttribArray(1);
-    glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void *) (6 * sizeof(float)));
+    glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, 14 * sizeof(float), (void *) (6 * sizeof(float)));
     glEnableVertexAttribArray(2);
+    glVertexAttribPointer(3, 3, GL_FLOAT, GL_FALSE, 14 * sizeof(float), (void *) (8 * sizeof(float)));
+    glEnableVertexAttribArray(3);
+    glVertexAttribPointer(4, 3, GL_FLOAT, GL_FALSE, 14 * sizeof(float), (void *) (8 * sizeof(float)));
+    glEnableVertexAttribArray(4);
 
     // Bind texture
     glActiveTexture(GL_TEXTURE0);
-    glBindTexture(GL_TEXTURE_2D, texture1);
+    glBindTexture(GL_TEXTURE_2D, textures[0]);
     glActiveTexture(GL_TEXTURE1);
-    glBindTexture(GL_TEXTURE_2D, texture2);
+    glBindTexture(GL_TEXTURE_2D, textures[1]);
     glActiveTexture(GL_TEXTURE2);
-    glBindTexture(GL_TEXTURE_2D, texture3);
+    glBindTexture(GL_TEXTURE_2D, textures[2]);
     glActiveTexture(GL_TEXTURE3);
-    glBindTexture(GL_TEXTURE_2D, texture4);
+    glBindTexture(GL_TEXTURE_2D, textures[3]);
     glActiveTexture(GL_TEXTURE4);
     glBindTexture(GL_TEXTURE_2D, blendMap);
     glActiveTexture(GL_TEXTURE5);
@@ -109,7 +111,7 @@ void TerrainGenerator::passToShader(RenderType type) {
     shader->passLightUniformVariables(light);
 
     shader->setMat4("model", modelMatrix);
-
+    
     shader->setInt("texture1", 0);
     shader->setInt("texture2", 1);
     shader->setInt("texture3", 2);
@@ -128,21 +130,19 @@ void TerrainGenerator::unbind() {
     glBindTexture(GL_TEXTURE_2D, 0);
 }
 
-vector<float> TerrainGenerator::generateTerrain() {
+vector<float> TerrainGenerator::generateTerrain(const unsigned int size) {
     vertexData = vector<float>(0);
-    for (int i = 0; i < SIZE; i++) {
-        for (int j = 0; j < SIZE; j++) {
-            generateCell(i - SIZE / 2, j - SIZE / 2, i, j);
+    for (int i = 0; i < size; i++) {
+        for (int j = 0; j < size; j++) {
+            generateCell(i - size / 2, j - size / 2, i, j,size);
         }
     }
     return vertexData;
 }
 
-void TerrainGenerator::generateCell(int offsetX, int offsetZ, int x, int z) {
+void TerrainGenerator::generateCell(int offsetX, int offsetZ, int x, int z,const unsigned int size) {
 
-    unsigned int SIZE = 255;
-
-    float step = 1 / (float) SIZE;
+    float step = 1 / (float) size;
 
     glm::vec2 tCoords1 = glm::vec2(x * step, z * step);
     glm::vec2 tCoords2 = glm::vec2(x * step, (z + 1) * step);
@@ -179,22 +179,38 @@ void TerrainGenerator::generateCell(int offsetX, int offsetZ, int x, int z) {
     addVecOffset(point1, offsetX, offsetZ, x, z);
     addVec(normal1);
     addVec(tCoords1);
+    addEmptyVec3();
+    addEmptyVec3();
+    
     addVecOffset(point2, offsetX, offsetZ, x, z + 1);
     addVec(normal2);
     addVec(tCoords2);
-    addVecOffset(point3, offsetX, offsetZ, x + 1, z);
-    addVec(normal3);
-    addVec(tCoords3);
+    addEmptyVec3();
+    addEmptyVec3();
 
     addVecOffset(point3, offsetX, offsetZ, x + 1, z);
     addVec(normal3);
     addVec(tCoords3);
+    addEmptyVec3();
+    addEmptyVec3();
+
+    addVecOffset(point3, offsetX, offsetZ, x + 1, z);
+    addVec(normal3);
+    addVec(tCoords3);
+    addEmptyVec3();
+    addEmptyVec3();
+  
     addVecOffset(point2, offsetX, offsetZ, x, z + 1);
     addVec(normal2);
     addVec(tCoords2);
+    addEmptyVec3();
+    addEmptyVec3();
+    
     addVecOffset(point4, offsetX, offsetZ, x + 1, z + 1);
     addVec(normal4);
     addVec(tCoords4);
+    addEmptyVec3();
+    addEmptyVec3();
 }
 
 void TerrainGenerator::addVecOffset(glm::vec3 data, int offsetX, int offsetZ, int x, int z) {
@@ -212,4 +228,10 @@ void TerrainGenerator::addVec(glm::vec3 data) {
     vertexData.push_back(data.x);
     vertexData.push_back(data.y);
     vertexData.push_back(data.z);
+}
+
+void TerrainGenerator::addEmptyVec3() {
+    vertexData.push_back(0);
+    vertexData.push_back(0);
+    vertexData.push_back(0);
 }

@@ -38,7 +38,9 @@ int main()
 
 	Light light(glm::vec3(0.5, 0.5, 0.5));
 
-	TerrainGenerator terrain = TerrainGenerator(&camera,&light,&renderer);
+	constexpr unsigned int TERRAIN_SIZE = 255;
+
+	TerrainGenerator terrain = TerrainGenerator(&camera,&light,&renderer,TERRAIN_SIZE);
 	Skybox skybox = Skybox(&camera);
 
 	renderer.addSkybox(&skybox);

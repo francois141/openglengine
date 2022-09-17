@@ -24,6 +24,7 @@ float ShadowCalculation(vec4 fragPosLightSpace)
 
     shadow = currentDepth - bias > closestDepth ? 1.0 : 0.0;
 
-    return shadow;
+    return max(0, shadow);
 }
+
 

@@ -19,15 +19,7 @@ This is a project I wrote during my high school. It's very old and the code not 
 
 ## TODO:
 
-- Frustrum culling
-- Screne graph
-- Better Imgui
-- SSAO & Better bloom
-- Cascades shadow mapping
-- Antialiasing
-- Deffered shading
-- PBR
-
+- Refactor the engine and make the code clean
 
 ### How to install it
 

@@ -29,40 +29,39 @@
 const unsigned int sizeX = 1500;
 const unsigned int sizeY = 1000;
 
-Camera camera = Camera(sizeX,sizeY);
-GLFWwindow* window = setupDisplay();
+Camera camera = Camera(sizeX, sizeY);
+GLFWwindow *window = setupDisplay();
 
 int main()
 {
-	MasterRenderer renderer = MasterRenderer(sizeX,sizeY);
+	MasterRenderer renderer = MasterRenderer(sizeX, sizeY);
 
 	Light light(glm::vec3(0.5, 0.5, 0.5));
 
 	constexpr unsigned int TERRAIN_SIZE = 255;
 
-	TerrainGenerator terrain = TerrainGenerator(&camera,&light,&renderer,TERRAIN_SIZE);
+	TerrainGenerator terrain = TerrainGenerator(&camera, &light, &renderer, TERRAIN_SIZE);
 	Skybox skybox = Skybox(&camera);
 
 	renderer.addSkybox(&skybox);
 	renderer.addTerrain(&terrain);
 
-	Object object = Object(&camera,&light,"Data/backpack.obj",&renderer);
-	object.setPosition(glm::vec3(0,5,0));
+	Object object = Object(&camera, &light, "Data/backpack.obj", &renderer);
+	object.setPosition(glm::vec3(0, 5, 0));
 
 	renderer.addDrawable(&object);
-
 
 	bool blackScreen = false;
 	int counter = 0;
 	float lastFrame;
 	UI ui = UI(window);
 
-	while (!glfwWindowShouldClose(window)) 
+	while (!glfwWindowShouldClose(window))
 	{
 		camera.processKeyboardInput(window);
 		float currentFrame = glfwGetTime();
-        float deltaTime = currentFrame - lastFrame;
-        lastFrame = currentFrame;
+		float deltaTime = currentFrame - lastFrame;
+		lastFrame = currentFrame;
 
 		renderer.render();
 		ui.render();

@@ -1,6 +1,7 @@
 
 /** Function that sum all components together **/
-vec4 getPhongColor() {
+vec4 getPhongColor() 
+{
     vec3 phongColor = vec3(0,0,0);
 
     float shadowReductionFactor = 1-ShadowCalculation(FragPosLightSpace);
@@ -10,11 +11,14 @@ vec4 getPhongColor() {
     phongColor += computeDiffuseIntensity(normal) * getDiffuseColor() * shadowReductionFactor;
     phongColor += computeSpecularIntensity(normal) * getSpecularColor() * shadowReductionFactor;
 
+    phongColor += computePointLight();
+
     return vec4(phongColor,1.0); 
 }
 
 /** Get the bright color **/ 
-vec4 getBrightColor(vec4 baseColor) {
+vec4 getBrightColor(vec4 baseColor) 
+{
     return dot(baseColor.xyz, vec3(0.2126, 0.7152, 0.0722)) > 0.7 ? baseColor : vec4(0,0,0,1);
 }
 
@@ -25,26 +29,27 @@ vec3 computePointLight()
 
     for (int i = 0; i < 15;i++)
     {
+        // Get distance & direction
         vec3 lightPosition = pointLights[i].position;
         vec3 direction = (lightPosition - FragPos);
+        float distance =  length(direction);
 
         // Compute directional Light
-        float directional = max(dot(normalize(direction), Normal), 0.0);
+        float directionalIntensity = max(dot(normalize(direction), Normal), 0.0);
+
         // Compute specular Light
         vec3 viewDir = normalize(cameraPosition - FragPos);
         vec3 reflectDir = normalize(reflect(-direction, Normal));
-        float spec =  pow(max(dot(viewDir, reflectDir), 0.0), 28);
+        float specularIntensity =  pow(max(dot(viewDir, reflectDir), 0.0), 28);
 
         // Compute attenuation
-        float abstand =  length(direction);
-        float attenuation = 1.0 / (1.0 + 0.7*abstand + 0.4*abstand*abstand);
-
+        float attenuation = 1.0 / (1.0 + 0.7*distance + 0.4*distance*distance);
         vec3 lightColor = pointLights[i].color;
 
-        outColor += attenuation*(directional+1.5*spec)*lightColor;
+        outColor += attenuation*(directionalIntensity*getDiffuseColor()+1.5*specularIntensity*getSpecularColor())*lightColor;
     }
 
-    return outColor * _retrieveProperty(albedoTextureID, textureCoords);
+    return outColor;
 }
 
 /** Return the ambient Light **/
@@ -59,10 +64,8 @@ float computeDiffuseIntensity(vec3 normal)
 {
     float diffuseLight = 0.2*max(dot(normalize(normal), normalize(light.lightDirection)), 0.0);
 
-
     vec3 viewDir = normalize(cameraPosition - FragPos);
     vec3 reflectDir = normalize(reflect(-light.lightDirection, normal));
-
 
     return diffuseLight;
 }
@@ -80,9 +83,11 @@ float computeSpecularIntensity(vec3 normal)
 }
 
 /** Return the normal vector **/
-vec3 getNormalVector() {
+vec3 getNormalVector() 
+{
     vec3 normal;
-    if (hasNormalMap) {
+    if (hasNormalMap) 
+    {
         normal = texture(normalMap, textureCoords).xyz;
         normal = normal * 2.0 - 1.0;
         normal = normalize(TBN * normal);

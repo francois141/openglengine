@@ -1,11 +1,27 @@
 #version 330 core
 
+ADD_MODULE(../sources/Shaders/modules/phong_include.glsl)
+
 /** LIST OF PREPROCESSING STUFF **/
 #define LOW 1 
 #define NORMAL 2
 #define SHADOW 3
 
 #define MAX_POINT_LIGHTS 15
+
+#define albedoTextureID 1
+#define specularTextureID 2
+#define normalTextureID 3
+
+uniform bool hasAlbedoMap;
+uniform bool hasSpecularMap;
+uniform bool hasNormalMap;
+
+uniform sampler2D albedoMap;
+uniform sampler2D specularMap;
+uniform sampler2D normalMap;
+
+
 vec3  blendMaps();
 
 /** FUNCTIONS DECLARATIONS **/
@@ -34,6 +50,9 @@ in vec2 textureCoords;
 in vec3 Normal;
 in vec3 FragPos;
 in vec4 FragPosLightSpace;
+in vec3 Tangent;
+in vec3 Bitangent;
+in mat3 TBN;
 
 layout (location = 0) out vec4 FragColor;
 layout (location = 1) out vec4 BrightColor;
@@ -54,27 +73,19 @@ uniform PointLight pointLights[MAX_POINT_LIGHTS];
 
 uniform int RenderType;
 
+ADD_MODULE(../sources/Shaders/modules/phong.glsl)
 ADD_MODULE(../sources/Shaders/modules/shadow.glsl)
-
 
 /** MAIN FUNCTION**/
 
 void main()
 {	
-	if(RenderType == NORMAL || RenderType == LOW) 
-	{
-		vec3 color = blendMaps();
-		vec3 lightIntensity = getLightIntensity();
+	if(RenderType == SHADOW)
+		return;
 
-		FragColor = vec4(color * lightIntensity,1.0);
-		BrightColor = vec4(0,0,0,1); // No bloom on the terrain
-	}
-	else if(RenderType == SHADOW) {
-		// Do nothing on the fragment side
-	}
+	FragColor = getPhongColor();
+	BrightColor = vec4(0,0,0,1); // No bloom on the terrain
 }
-
-
 
 /** OTHER FUNCTIONS **/
 
@@ -97,41 +108,17 @@ vec3 blendMaps()
 	return color_out;
 }
 
-vec3 getLightIntensity() {
-	float shadow = ShadowCalculation(FragPosLightSpace);
-	return computeDiffuseLight() * (1 - shadow) + computeAmbientLight() + computePointLight();
+vec3 getAmbientColor() 
+{
+    return blendMaps();
 }
 
-float computeDiffuseLight()
+vec3 getDiffuseColor() 
 {
-	float diffuseLight = 0.1*max(dot(normalize(Normal),normalize(light.lightDirection)),0.0);
-	return diffuseLight;
+    return blendMaps(); 
 }
 
-float computeAmbientLight()
+vec3 getSpecularColor() 
 {
-	float ambientLight = 0.01;
-	return ambientLight;
-}
-
-vec3 computePointLight()
-{
-	vec3 outColor = vec3(0,0,0);
-
-	for(int i = 0; i < 15;i++)
-	{
-		vec3 lightPosition = pointLights[i].position;
-		vec3 direction = (lightPosition - FragPos);
-	
-		float intensity = max(dot(normalize(direction),Normal),0.0);
-		float abstand =  length(direction);
-
-		float attenuation = 1.0 / (1.0 + 0.7*abstand + 0.4*abstand*abstand);
-
-		vec3 lightColor = pointLights[i].color;
-
-		outColor += attenuation*intensity*lightColor;
-	}
-
-	return outColor;
+    return blendMaps();
 }

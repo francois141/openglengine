@@ -99,4 +99,3 @@ vec3 getNormalVector()
 
     return normal;
 }
- 

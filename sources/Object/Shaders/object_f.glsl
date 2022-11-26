@@ -56,7 +56,6 @@ in vec3 Tangent;
 in vec3 Bitangent;
 in mat3 TBN;
 
-
 layout (location = 0) out vec4 FragColor;
 layout (location = 1) out vec4 BrightColor;
 
@@ -92,7 +91,8 @@ vec3 getSpecularColor() {
 
 vec3 _retrieveProperty(int textureType, vec2 coords)
 {
-    switch (textureType) {
+    switch (textureType) 
+    {
         case albedoTextureID:
             return hasAlbedoMap ? texture(albedoMap, coords).xyz : ambientColor;
         case specularTextureID:

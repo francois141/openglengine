@@ -31,16 +31,10 @@ uniform mat4 finalBonesMatrices[MAX_BONES];
 
 uniform int RenderType;
 
+ADD_MODULE(../sources/Shaders/modules/position.glsl)
+
 void main()
 {
-	Tangent = tangent;
-	Bitangent = bitangent;
-
-	vec3 T = normalize(vec3(model * vec4(Tangent,0.0)));
-	vec3 B = normalize(vec3(model * vec4(Bitangent,0.0)));
-	vec3 N = normalize(vec3(model * vec4(aNormal,0.0)));
-	TBN = mat3(T,B,N);
-
 	vec4 totalPosition = vec4(0.0f);
 	for(int i = 0; i < 4;i++)
 	{
@@ -58,23 +52,24 @@ void main()
 		totalPosition += localPosition * weights[i];
 	}
 
-	textureCoords = textureCoord;
-	FragPos = vec3(model * vec4(aPos, 1.0));
-	Normal = mat3(transpose(inverse(model))) * aNormal;  
-
-	gl_Position = projection * view * model * totalPosition;
-
-	FragPosLightSpace = lightSpaceMatrix * model * vec4(aPos,1.0);
-
 	if(RenderType == LOW || RenderType == NORMAL) {
-		gl_Position = projection * view * model * totalPosition;
+
+		Tangent = tangent;
+		Bitangent = bitangent;
+
+		vec3 T = normalize(vec3(model * vec4(Tangent,0.0)));
+		vec3 B = normalize(vec3(model * vec4(Bitangent,0.0)));
+		vec3 N = normalize(vec3(model * vec4(aNormal,0.0)));
+		TBN = mat3(T,B,N);
+
+		textureCoords = textureCoord;
+		FragPos = vec3(model * vec4(aPos, 1.0));
+		Normal = mat3(transpose(inverse(model))) * aNormal;  
+
 		FragPosLightSpace = lightSpaceMatrix * model * vec4(aPos,1.0);
 	}
-	else if(RenderType == SHADOW) {
-		gl_Position = lightSpaceMatrix * model * vec4(aPos,1.0);
-	}
 
-
+	gl_Position = computePosition(lightSpaceMatrix,projection,view,model.totalPosition,RenderType);
 
 }
 

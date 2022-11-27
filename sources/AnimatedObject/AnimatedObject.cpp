@@ -41,29 +41,24 @@ AnimatedObject::AnimatedObject(Camera* camera_in, Light* light_in, string obj_pa
 
 void AnimatedObject::draw()
 {
-	for(int i = 0; i < nbMeshes;i++) {
-		bind(i);
-		passToShader(NORMAL);
-		glDrawElements(GL_TRIANGLES,meshIndices[i].size(),GL_UNSIGNED_INT,(void*)0);
-	}
-	unbind();
+	this->_draw(NORMAL);
 }
 
 void AnimatedObject::drawShadow()
 {
-	for(int i = 0; i < nbMeshes;i++) {
-		bind(i);
-		passToShader(SHADOW);
-		glDrawElements(GL_TRIANGLES,meshIndices[i].size(),GL_UNSIGNED_INT,(void*)0);
-	}
-	unbind();
+	this->_draw(SHADOW);
 }
 
 void AnimatedObject::drawLowQuality() 
 {
+	this->_draw(LOW);
+}
+
+void AnimatedObject::_draw(RenderType TYPE)
+ {
 	for(int i = 0; i < nbMeshes;i++) {
-		bind(i);
-		passToShader(LOW);
+		this->bind(i);
+		this->passToShader(TYPE);
 		glDrawElements(GL_TRIANGLES,meshIndices[i].size(),GL_UNSIGNED_INT,(void*)0);
 	}
 	unbind();

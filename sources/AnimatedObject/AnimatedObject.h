@@ -54,6 +54,7 @@ class AnimatedObject : public Drawable {
 		// Bind wrappers
 
 		void bind(int index);
+		void _draw(RenderType TYPE);
 
 		void unbind();
 

@@ -1,51 +1,9 @@
 #version 330 core
 
 ADD_MODULE(../sources/Shaders/modules/phong_include.glsl)
-
-/** LIST OF PREPROCESSING STUFF **/
-#define LOW 1 
-#define NORMAL 2
-#define SHADOW 3
-
-#define MAX_POINT_LIGHTS 15
-
-#define albedoTextureID 1
-#define specularTextureID 2
-#define normalTextureID 3
-
-uniform bool hasAlbedoMap;
-uniform bool hasSpecularMap;
-uniform bool hasNormalMap;
-
-uniform sampler2D albedoMap;
-uniform sampler2D specularMap;
-uniform sampler2D normalMap;
-
-
-vec3  blendMaps();
-
-/** FUNCTIONS DECLARATIONS **/
-
-float computeDiffuseLight();
-float computeAmbientLight();
-vec3  computePointLight();
-vec3 getLightIntensity();
-
-float ShadowCalculation(vec4 fragPosLightSpace);
-
-/** STRUCT DECLARATIONS **/
-
-struct Light {
-	vec3 lightDirection;
-};
-
-struct PointLight {
-	vec3 position;
-	vec3 color;
-};
+ADD_MODULE(../sources/Shaders/modules/classic_definitions.glsl)
 
 /** IN & OUT VARIABLES **/ 
-
 in vec2 textureCoords;
 in vec3 Normal;
 in vec3 FragPos;
@@ -58,20 +16,14 @@ layout (location = 0) out vec4 FragColor;
 layout (location = 1) out vec4 BrightColor;
 
 /** UNIFORM VARIABLES **/
-
-uniform vec3 cameraPosition;
-
 uniform sampler2D texture1;
 uniform sampler2D texture2;
 uniform sampler2D texture3;
 uniform sampler2D texture4;
 uniform sampler2D blendmap;
-uniform sampler2D ShadowMap;
 
-uniform Light light;
-uniform PointLight pointLights[MAX_POINT_LIGHTS];
-
-uniform int RenderType;
+/** FUNCTIONS DECLARATION **/
+vec3 blendMaps();
 
 ADD_MODULE(../sources/Shaders/modules/phong.glsl)
 ADD_MODULE(../sources/Shaders/modules/shadow.glsl)

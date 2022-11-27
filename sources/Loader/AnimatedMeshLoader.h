@@ -76,6 +76,12 @@ public:
         return textures;
     }
 
+
+    Material getMaterial(int i) {
+        return materials.at(i);
+    }
+
+
     int getNbMeshes() {
         return nbMeshes;
     }
@@ -85,6 +91,7 @@ public:
     std::string directory;
     std::vector<std::vector<AnimatedVertex>> data;
     std::vector<std::vector<unsigned int>> indices;
+    std::vector<Material> materials;
     std::vector<AnimatedTexture> textures;
     std::vector<AnimatedTexture> textures_loaded;
     int m_BoneCounter;
@@ -176,9 +183,40 @@ private:
             textures.insert(textures.end(), normalMaps.begin(), normalMaps.end());
         }
 
+        if (mesh->mMaterialIndex >= 0) {
+            aiMaterial *materialData = scene->mMaterials[mesh->mMaterialIndex];
+            Material material = Material();
+
+            aiColor3D color_ambient(0.f, 0.f, 0.f);
+            aiColor3D color_diffuse(0.f, 0.f, 0.f);
+            aiColor3D color_specular(0.f, 0.f, 0.f);
+
+            float specularExponent = 0.0f;
+
+            materialData->Get(AI_MATKEY_COLOR_AMBIENT, color_ambient);
+            materialData->Get(AI_MATKEY_COLOR_DIFFUSE, color_diffuse);
+            materialData->Get(AI_MATKEY_COLOR_SPECULAR, color_specular);
+            materialData->Get(AI_MATKEY_SHININESS, specularExponent);
+
+            material.ambientColor = convertToVector(color_ambient);
+            material.diffuseColor = convertToVector(color_diffuse);
+            material.specularColor = convertToVector(color_specular);
+            material.specularExponent = specularExponent;
+
+            materials.push_back(material);
+        }
+
         ExtractBoneWeightForVertices(data_current, mesh, scene);
 
         return make_pair(data_current, indices_current);
+    }
+
+    inline glm::vec3 convertToVector(aiColor3D input) {
+        glm::vec3 output;
+        output[0] = input[0];
+        output[1] = input[1];
+        output[2] = input[2];
+        return output;
     }
 
     void ExtractBoneWeightForVertices(std::vector<AnimatedVertex> &vertices, aiMesh *mesh, const aiScene *scene) {

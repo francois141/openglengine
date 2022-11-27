@@ -16,6 +16,7 @@ AnimatedObject::AnimatedObject(Camera* camera_in, Light* light_in, string obj_pa
 	for(int i = 0; i < nbMeshes;i++) {
 		meshData.push_back(loader.getData(i));
 		meshIndices.push_back(loader.getIndices(i));
+		materials.push_back(loader.getMaterial(i));
 		createBuffers(i);
 	}
 
@@ -63,7 +64,6 @@ void AnimatedObject::_draw(RenderType TYPE)
 	}
 	unbind();
 }
-
 
 void AnimatedObject::createBuffers(int index)
 {
@@ -120,21 +120,14 @@ void AnimatedObject::bind(int index) {
 
 void AnimatedObject::passToShader(RenderType type)
 {
-	shader->use();
-	shader->passCameraUniformVariables(camera);
-	shader->passLightUniformVariables(light);
-	shader->passModelMatrix(modelMatrix);
+    shader->use();
 
-	for(int i = 0; i < 100;i++)
-	{
-		shader->setMat4("finalBonesMatrices["+std::to_string(i)+"]",transformations[i]);
-	}
+    shader->passCameraUniformVariables(camera);
+    shader->passLightUniformVariables(light);
+    shader->passModelMatrix(modelMatrix);
+    shader->passMaterial(materials[0]);
 
-	shader->setInt("Texture",0);
-	shader->setInt("ShadowMap",1);
-	shader->setInt("specularMap",2);
-	shader->setInt("normalMap",3);
-	shader->setInt("RenderType",type);
+    shader->setInt("RenderType", type);
 }
 
 void AnimatedObject::unbind()

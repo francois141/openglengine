@@ -67,6 +67,7 @@ class AnimatedObject : public Drawable {
 
 		std::vector<std::vector<AnimatedVertex> > meshData;
 		std::vector<std::vector<unsigned int> > meshIndices;
+		std::vector<Material> materials;
 
 		// Number meshes
 		unsigned int nbMeshes;

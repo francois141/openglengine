@@ -1,3 +1,4 @@
+uniform sampler2D ShadowMap;
 
 /** Compute if Object is in the shadow right now **/
 float ShadowCalculation(vec4 fragPosLightSpace)
